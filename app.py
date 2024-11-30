@@ -5,6 +5,8 @@ app = Flask(__name__)
 CORS(app)  # Enable cross-origin requests (optional)
 user_locations = {}  # In-memory storage for user locations
 
+display_hider_threshold = 5 #TODO: test for sane speed
+
 # Serve the main HTML page
 @app.route('/')
 def index():
@@ -28,13 +30,19 @@ def update_location():
 @app.route('/hider', methods=['POST'])
 def hider():
     user_locations["hider"] = request.json
+
     print(user_locations["hider"])
 
 # API to fetch all users' locations
 @app.route('/get_locations', methods=['GET'])
 def get_locations():
-    user_locations["hider"] = {"speed": 10, "lat": 33.6472, "lng": -117.8411}
-    return jsonify(user_locations), 200
+    #user_locations["hider"] = {"speed": 10, "lat": 33.6472, "lng": -117.8411}
+    if "hider" in user_locations and user_locations["hider"]["speed"] < display_hider_threshold:
+        user_locations.pop(hider)
+    if game_state:
+        return jsonify(user_locations), 200
+    else:
+        return jsonify({}), 200
 
 if __name__ == '__main__':
     app.run(host='0.0.0.0', port=5001)
