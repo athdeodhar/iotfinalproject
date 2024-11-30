@@ -24,9 +24,16 @@ def update_location():
     user_locations[user_id] = {"lat": lat, "lng": lng}
     return jsonify({"message": "Location updated"}), 200
 
+# API to update hider's location
+@app.route('/hider', methods=['POST'])
+def hider():
+    user_locations["hider"] = request.json
+    print(user_locations["hider"])
+
 # API to fetch all users' locations
 @app.route('/get_locations', methods=['GET'])
 def get_locations():
+    user_locations["hider"] = {"speed": 10, "lat": 33.6472, "lng": -117.8411}
     return jsonify(user_locations), 200
 
 if __name__ == '__main__':

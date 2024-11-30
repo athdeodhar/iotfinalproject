@@ -8,9 +8,23 @@ document.addEventListener("DOMContentLoaded", function () {
     attribution: '© OpenStreetMap contributors',
   }).addTo(map);
 
+  var redIcon = new L.Icon({
+    iconUrl: 'https://raw.githubusercontent.com/pointhi/leaflet-color-markers/master/img/marker-icon-2x-red.png',
+    shadowUrl: 'https://cdnjs.cloudflare.com/ajax/libs/leaflet/0.7.7/images/marker-shadow.png',
+    iconSize: [25, 41],
+    iconAnchor: [12, 41],
+    popupAnchor: [1, -34],
+    shadowSize: [41, 41]
+  });
+
   // Function to update markers on the map
   function updateMarkers(locations) {
+    console.log(locations);
     for (const userId in locations) {
+      if (userId == "hider") {
+        continue;
+      }
+
       const { lat, lng } = locations[userId];
 
       // If the marker for the user doesn't exist, create it
@@ -31,6 +45,23 @@ document.addEventListener("DOMContentLoaded", function () {
         delete markers[userId];
         delete markerTimeouts[userId];
       }, 60000); // Marker is removed after 60 seconds of inactivity
+    }
+
+    const userId = "hider"
+
+    if (userId in locations) {
+      const {speed, lat, lng} = locations[userId]
+      console.log(lat);
+      console.log(lng);
+      if (!markers[userId]) {
+        markers[userId] = L.marker([lat, lng], {icon:redIcon})
+          .addTo(map)
+      } else {
+        markers[userId].setLatLng([lat, lng], {icon:redIcon});
+      }
+    }
+    else {
+      delete markers[userId]
     }
   }
 
