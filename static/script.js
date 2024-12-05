@@ -85,6 +85,13 @@ document.addEventListener("DOMContentLoaded", function () {
       .catch(console.error);
   }
 
+  async function fetchButtonState() {
+    response = await fetch("/get_game_state")
+    const buttonJson = await response.json()
+    gamestate = buttonJson[gamestate]
+    if (gamestate==false) {window.alert('Game is over!')}
+  }
+
   // Generate a unique user ID if one doesn't exist
   function generateUserId() {
     return "user_" + Math.random().toString(36).substr(2, 9);
@@ -113,6 +120,9 @@ document.addEventListener("DOMContentLoaded", function () {
 
   // Periodically fetch all users' locations
   setInterval(fetchLocations, 5000); // Fetch every 5 seconds
+  setInterval(fetchButtonState, 5000);
+
+
 
   // Set the map size and position once
   const savedCenter = localStorage.getItem("mapCenter");
