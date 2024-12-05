@@ -48,8 +48,9 @@ def update_location():
 @app.route('/hider', methods=['POST'])
 def hider():
     user_locations["hider"] = request.json
-
+    print("---------HIDER SENT LOCATION-------------")
     print(user_locations["hider"])
+    return jsonify({"message": "Hider location updated"}), 200
 
 # API to fetch all users' locations
 @app.route('/get_locations', methods=['GET'])
