@@ -66,7 +66,7 @@ def get_locations():
     if global_queries_timer % free_hint_interval == 0: #check whether we send a location hint anyway
         pass
     elif "hider" in user_locations and float(user_locations["hider"]["speed"]) < display_hider_threshold:
-        user_locations.pop(hider)
+        user_locations.pop("hider")
     if game_state or True: #Turn off this trsue to hide all locations once game is 'over'
         return jsonify(user_locations), 200
     else:
@@ -75,12 +75,10 @@ def get_locations():
 @app.route('/set_game_state', methods=['POST'])
 def set_game_state():
     global game_state
-    if request.form.get("state") == "True":
-        global_queries_timer = 0
-        print("Toggling game state!")
-        game_state= not game_state
-    elif request.form.get("state") == "False":
-        print("No change to game state!")
+    global global_queries_timer
+    global_queries_timer = 0
+    print("Toggling game state!")
+    game_state= not game_state
     return str(game_state)
 
 @app.route('/get_game_state', methods=['GET'])
