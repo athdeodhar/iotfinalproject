@@ -3,13 +3,13 @@ from flask_cors import CORS
 from time import time
 
 game_state=False
+global_queries_timer = 0
+user_locations = {}  # In-memory storage for user locations
+last_seen = {}
+free_hint_interval = 24
 
 app = Flask(__name__)
 CORS(app)  # Enable cross-origin requests (optional)
-user_locations = {}  # In-memory storage for user locations
-last_seen = {}
-global_queries_timer = 0
-free_hint_interval = 24
 #initial_hider_send_interval =
 
 
@@ -59,13 +59,15 @@ def hider():
 # API to fetch all users' locations
 @app.route('/get_locations', methods=['GET'])
 def get_locations():
-    global_queries_timer += 1
+    global global_queries_timer
+    local_query_timer = global_queries_timer + 1
+    global_queries_timer = local_query_timer
     #user_locations["hider"] = {"speed": 10, "lat": 33.6472, "lng": -117.8411}
     if global_queries_timer % free_hint_interval == 0: #check whether we send a location hint anyway
         pass
     elif "hider" in user_locations and user_locations["hider"]["speed"] < display_hider_threshold:
         user_locations.pop(hider)
-    if game_state or True: #Turn off this true to hide all locations once game is 'over'
+    if game_state or True: #Turn off this trsue to hide all locations once game is 'over'
         return jsonify(user_locations), 200
     else:
         return jsonify({}), 200
