@@ -65,7 +65,7 @@ def get_locations():
     #user_locations["hider"] = {"speed": 10, "lat": 33.6472, "lng": -117.8411}
     if global_queries_timer % free_hint_interval == 0: #check whether we send a location hint anyway
         pass
-    elif "hider" in user_locations and user_locations["hider"]["speed"] < display_hider_threshold:
+    elif "hider" in user_locations and int(user_locations["hider"]["speed"]) < display_hider_threshold:
         user_locations.pop(hider)
     if game_state or True: #Turn off this trsue to hide all locations once game is 'over'
         return jsonify(user_locations), 200
