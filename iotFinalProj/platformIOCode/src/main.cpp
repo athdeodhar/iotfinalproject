@@ -13,14 +13,16 @@
 #define TXD2 10 // 15
 
 #define GPS_BAUD 9600
-int gpsCycle = 7;
+int gpsCycle = 40;
 int currCycle = 1;
-#define BUTTON_PIN 39
+#define BUTTON_PIN 22
+#define BUTTON_REDUNDANT_PIN 34
 int pressed = 0;
 int counter = 0;
 TinyGPSPlus gps;
 int lastState = LOW;    // the previous state from the input pin
 int currentState = LOW; // the current reading from the input pin
+
 // Create an instance of the HardwareSerial class for Serial 2
 HardwareSerial gpsSerial(2);
 
@@ -35,9 +37,8 @@ const char kHostname[] = "18.116.74.254";
 const int kNetworkTimeout = 30 * 1000;
 // Number of milliseconds to wait if no data is available before trying again
 const int kNetworkDelay = 1000;
-
 /*
- *************************SETUP FOR INITIAL WIFI USERNAME / PASSWORD *******************************
+// *************************SETUP FOR INITIAL WIFI USERNAME / PASSWORD *******************************
 void setup()
 {
   Serial.begin(9600);
@@ -66,8 +67,8 @@ void setup()
     Serial.printf("Done\n");
     // Write
     Serial.printf("Updating ssid/pass in NVS ... ");
-    char ssid[] = "SSIDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDD"; /////////////////////////////////////////////////////////////////////////
-    char pass[] = " PASSWORDDDDDDDDDDDDDDDDDDDDDDDDDDD";///////////////////////////////////////////////////////////////////////////
+    char ssid[] = "";    /////////////////////////////////////////////////////////////////////////
+    char pass[] = ""; ///////////////////////////////////////////////////////////////////////////
     err = nvs_set_str(my_handle, "ssid", ssid);
     err |= nvs_set_str(my_handle, "pass", pass);
     Serial.printf((err != ESP_OK) ? "Failed!\n" : "Done\n");
@@ -80,6 +81,7 @@ void setup()
   }
 }
 */
+
 void nvs_access()
 {
   // Initialize NVS
@@ -129,7 +131,6 @@ void nvs_access()
 }
 
 void setup()
-
 {
   Serial.begin(9600);
   delay(300);
@@ -145,6 +146,7 @@ void setup()
   Serial.println();
   Serial.print("Connecting to ");
   Serial.println(ssid);
+
   WiFi.begin(ssid, pass);
   while (WiFi.status() != WL_CONNECTED)
   {
@@ -162,6 +164,7 @@ void setup()
 void loop()
 {
 
+  delay(50);
   int err = 0;
   WiFiClient wifi;
   HttpClient client = HttpClient(wifi, kHostname, 5000);
@@ -188,6 +191,23 @@ void loop()
       Serial.print("Satellites = ");
       Serial.println(gps.satellites.value());
       Serial.println();
+      /*   SEND GPS INFORMATION*/
+
+      /*
+      Serial.println("Sending gps data.................................");
+      String inputString = "{\"lat\":\"" + String(gps.location.lat()) + "\",\"lng\":\"" + String(gps.location.lng()) + "\",\"speed\":\"" + String(gps.speed.kmph()) + "\"}";
+      Serial.println(inputString);
+
+      std::string kPath = "/hider";
+      String contentType = "application/json";
+      String postData = inputString;
+      client.post(kPath.c_str(), contentType, postData);
+
+      // read the status code and body of the response
+      int statusCode = client.responseStatusCode();
+      String response = client.responseBody();
+
+      */
     }
   }
   else
@@ -199,10 +219,15 @@ void loop()
   Serial.println(currentState);
 
   lastState = currentState;
+  // red_lastState = red_currentState;
   currentState = digitalRead(BUTTON_PIN);
-  if (lastState == LOW && currentState == HIGH)
+  // red_currentState = digitalRead(BUTTON_REDUNDANT_PIN);
+
+  if ((lastState == LOW && currentState == HIGH))
   {
     Serial.println("HIDER IS CAUGHT. GAME OVER!!!!!!!!!!!!!!!!!!!!!!");
+
+    /*/
 
     std::string kPath = "/set_game_state";
     String contentType = "application/x-www-form-urlencoded";
@@ -213,11 +238,14 @@ void loop()
     int statusCode = client.responseStatusCode();
     String response = client.responseBody();
 
+
+
     Serial.print("Status code: ");
     Serial.println(statusCode);
     Serial.print("Response: ");
     Serial.println(response);
     Serial.println("Wait five seconds");
+     */
 
     delay(5000);
   }
