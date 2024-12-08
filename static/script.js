@@ -90,6 +90,7 @@ document.addEventListener("DOMContentLoaded", function () {
     response = await fetch("/get_game_state")
     const buttonJson = await response.json()
     gamestate = buttonJson[gamestate]
+    console.log(gamestate)
     if (gamestate==false) {window.alert('Game is over!')}
   }
 
