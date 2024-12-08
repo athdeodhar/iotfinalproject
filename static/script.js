@@ -2,6 +2,7 @@ document.addEventListener("DOMContentLoaded", function () {
   const map = L.map("map").setView([0, 0], 13); // Default view
   const markers = {}; // Store markers for each user
   const markerTimeouts = {}; // Store timeout ids for marker cleanup
+  var gamestate = false
 
   L.tileLayer("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png", {
     maxZoom: 19,
