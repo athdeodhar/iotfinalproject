@@ -13,10 +13,12 @@
 #define TXD2 10 // 15
 
 #define GPS_BAUD 9600
-int gpsCycle = 40;
-int currCycle = 1;
+#define loopDelay 50
 #define BUTTON_PIN 22
 #define BUTTON_REDUNDANT_PIN 34
+int gpsCycle = 40;
+int currCycle = 1;
+
 int pressed = 0;
 int counter = 0;
 TinyGPSPlus gps;
@@ -164,13 +166,13 @@ void setup()
 void loop()
 {
 
-  delay(50);
+  delay(loopDelay);
   int err = 0;
   WiFiClient wifi;
   HttpClient client = HttpClient(wifi, kHostname, 5000);
 
-  // char gpsData = gpsSerial.read();
-  // Serial.print(gpsData);
+  char gpsData = gpsSerial.read();
+  Serial.print(gpsData);
   if (currCycle % gpsCycle == 0)
   {
     currCycle = 1;
@@ -193,7 +195,6 @@ void loop()
       Serial.println();
       /*   SEND GPS INFORMATION*/
 
-      /*
       Serial.println("Sending gps data.................................");
       String inputString = "{\"lat\":\"" + String(gps.location.lat()) + "\",\"lng\":\"" + String(gps.location.lng()) + "\",\"speed\":\"" + String(gps.speed.kmph()) + "\"}";
       Serial.println(inputString);
@@ -206,8 +207,6 @@ void loop()
       // read the status code and body of the response
       int statusCode = client.responseStatusCode();
       String response = client.responseBody();
-
-      */
     }
   }
   else
@@ -227,8 +226,6 @@ void loop()
   {
     Serial.println("HIDER IS CAUGHT. GAME OVER!!!!!!!!!!!!!!!!!!!!!!");
 
-    /*/
-
     std::string kPath = "/set_game_state";
     String contentType = "application/x-www-form-urlencoded";
     String postData = "state=False";
@@ -238,15 +235,11 @@ void loop()
     int statusCode = client.responseStatusCode();
     String response = client.responseBody();
 
-
-
     Serial.print("Status code: ");
     Serial.println(statusCode);
     Serial.print("Response: ");
     Serial.println(response);
     Serial.println("Wait five seconds");
-     */
-
     delay(5000);
   }
 
