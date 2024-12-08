@@ -8,6 +8,10 @@ app = Flask(__name__)
 CORS(app)  # Enable cross-origin requests (optional)
 user_locations = {}  # In-memory storage for user locations
 last_seen = {}
+global_queries_timer = 0
+free_hint_interval = 24
+#initial_hider_send_interval =
+
 
 display_hider_threshold = 5 #TODO: test for sane speed
 
@@ -55,8 +59,11 @@ def hider():
 # API to fetch all users' locations
 @app.route('/get_locations', methods=['GET'])
 def get_locations():
+    global_queries_timer += 1
     #user_locations["hider"] = {"speed": 10, "lat": 33.6472, "lng": -117.8411}
-    if "hider" in user_locations and user_locations["hider"]["speed"] < display_hider_threshold:
+    if global_queries_timer % free_hint_interval == 0: #check whether we send a location hint anyway
+        pass
+    elif "hider" in user_locations and user_locations["hider"]["speed"] < display_hider_threshold:
         user_locations.pop(hider)
     if game_state or True: #Turn off this true to hide all locations once game is 'over'
         return jsonify(user_locations), 200
@@ -67,11 +74,11 @@ def get_locations():
 def set_game_state():
     global game_state
     if request.form.get("state") == "True":
-        print("Setting game_state to True")
-        game_state=True
+        global_queries_timer = 0
+        print("Toggling game state!")
+        game_state= not game_state
     elif request.form.get("state") == "False":
-        print("Setting game_state to False")
-        game_state=False
+        print("No change to game state!")
     return str(game_state)
 
 @app.route('/get_game_state', methods=['GET'])
