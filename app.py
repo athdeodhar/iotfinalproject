@@ -13,7 +13,7 @@ CORS(app)  # Enable cross-origin requests (optional)
 #initial_hider_send_interval =
 
 
-display_hider_threshold = 5 #TODO: test for sane speed
+display_hider_threshold = 2 #TODO: test for sane speed
 
 # Serve the main HTML page
 @app.route('/')
