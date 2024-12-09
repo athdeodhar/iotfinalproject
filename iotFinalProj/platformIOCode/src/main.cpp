@@ -172,7 +172,7 @@ void loop()
   HttpClient client = HttpClient(wifi, kHostname, 5000);
 
   char gpsData = gpsSerial.read();
-  Serial.print(gpsData);
+  //Serial.print(gpsData);
   if (currCycle % gpsCycle == 0)
   {
     currCycle = 1;
@@ -195,8 +195,14 @@ void loop()
       Serial.println();
       /*   SEND GPS INFORMATION*/
 
+      char buffer[50];
+      dtostrf(gps.location.lat(), 0, 20, buffer);
+
+      char buffer2[50];
+      dtostrf(gps.location.lng(), 0, 20, buffer2);
+
       Serial.println("Sending gps data.................................");
-      String inputString = "{\"lat\":\"" + String(gps.location.lat()) + "\",\"lng\":\"" + String(gps.location.lng()) + "\",\"speed\":\"" + String(gps.speed.kmph()) + "\"}";
+      String inputString = "{\"lat\":\"" + String(buffer) + "\",\"lng\":\"" + String(buffer2) + "\",\"speed\":\"" + String(gps.speed.kmph()) + "\"}";
       Serial.println(inputString);
 
       std::string kPath = "/hider";
