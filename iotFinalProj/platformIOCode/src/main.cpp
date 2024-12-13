@@ -25,7 +25,6 @@ TinyGPSPlus gps;
 int lastState = LOW;    // the previous state from the input pin
 int currentState = LOW; // the current reading from the input pin
 
-// Create an instance of the HardwareSerial class for Serial 2
 HardwareSerial gpsSerial(2);
 
 char ssid[50]; // your network SSID (name)
@@ -91,8 +90,7 @@ void nvs_access()
   if (err == ESP_ERR_NVS_NO_FREE_PAGES ||
       err == ESP_ERR_NVS_NEW_VERSION_FOUND)
   {
-    // NVS partition was truncated and needs to be erased
-    // Retry nvs_flash_init
+
     ESP_ERROR_CHECK(nvs_flash_erase());
     err = nvs_flash_init();
   }
@@ -118,8 +116,6 @@ void nvs_access()
     {
     case ESP_OK:
       Serial.printf("Done\n");
-      // Serial.printf("SSID = %s\n", ssid);
-      // Serial.printf("PASSWD = %s\n", pass);
       break;
     case ESP_ERR_NVS_NOT_FOUND:
       Serial.printf("The value is not initialized yet!\n");
@@ -140,9 +136,8 @@ void setup()
   gpsSerial.begin(GPS_BAUD, SERIAL_8N1, RXD2, TXD2);
   Serial.println("Serial 2 started at 9600 baud rate");
 
-  // Retrieve SSID/PASSWD from flash before anything else
   nvs_access();
-  // We start by connecting to a WiFi network
+
   delay(1000);
   Serial.println();
   Serial.println();
@@ -219,18 +214,15 @@ void loop()
   {
     currCycle++;
   }
-  // Serial.println(currCycle);
 
   Serial.println(currentState);
 
   lastState = currentState;
-  // red_lastState = red_currentState;
   currentState = digitalRead(BUTTON_PIN);
-  // red_currentState = digitalRead(BUTTON_REDUNDANT_PIN);
 
   if ((lastState == LOW && currentState == HIGH))
   {
-    Serial.println("HIDER IS CAUGHT. GAME OVER!!!!!!!!!!!!!!!!!!!!!!");
+    Serial.println("HIDER IS CAUGHT. GAME OVER!!");
 
     std::string kPath = "/set_game_state";
     String contentType = "application/x-www-form-urlencoded";
@@ -248,11 +240,4 @@ void loop()
     Serial.println("Wait five seconds");
     delay(5000);
   }
-
-  /*
-   String inputString = "{\"lat\":\"" + String(gps.location.lat()) + "\",\"lng\":\"" + String(gps.location.lng()) + "\",\"speed\":\"" + String(gps.speed.value()) + "\"}";
-   // String inputStringTest = "{\"lat\":\"" + String(33.646062) + "\",\"lng\":\"" + String(-117.846545) + "\",\"speed\":\"" + String(15) + "\"}";
-   Serial.println(inputString);
-   // err = http.post("18.116.74.254", 5000, "hider", inputString.c_str());
-*/
 }

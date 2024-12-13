@@ -159,7 +159,7 @@ void loopTemp()
     if (lastState == LOW && currentState == HIGH)
     {
         Serial.println("HIDER IS CAUGHT. GAME OVER!!!!!!!!!!!!!!!!!!!!!!");
-        delay(5000);    
+        delay(5000);
     }
 
     int err = 0;
@@ -236,10 +236,12 @@ void loopTemp()
 }
 */
 
-
 /*
 
-
+   String inputString = "{\"lat\":\"" + String(gps.location.lat()) + "\",\"lng\":\"" + String(gps.location.lng()) + "\",\"speed\":\"" + String(gps.speed.value()) + "\"}";
+   // String inputStringTest = "{\"lat\":\"" + String(33.646062) + "\",\"lng\":\"" + String(-117.846545) + "\",\"speed\":\"" + String(15) + "\"}";
+   Serial.println(inputString);
+   // err = http.post("18.116.74.254", 5000, "hider", inputString.c_str());
 
 
 
