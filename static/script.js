@@ -20,7 +20,6 @@ document.addEventListener("DOMContentLoaded", function () {
 
   // Function to update markers on the map
   function updateMarkers(locations) {
-    // console.log(locations);
     for (const userId in locations) {
       if (userId == "hider") {
         continue;
@@ -52,8 +51,6 @@ document.addEventListener("DOMContentLoaded", function () {
 
     if (userId in locations) {
       const {speed, lat, lng} = locations[userId]
-      // console.log(lat);
-      // console.log(lng);
       if (!markers[userId]) {
         markers[userId] = L.marker([lat, lng], {icon:redIcon})
           .addTo(map)

@@ -38,8 +38,6 @@ def update_location():
         if u == "hider":
             continue
         tim = int(time())
-        print(tim)
-        print(last_seen[u])
         if tim - last_seen[u] > 60:
             to_delete.append(u)
     for u in to_delete:
@@ -52,8 +50,6 @@ def update_location():
 @app.route('/hider', methods=['POST'])
 def hider():
     user_locations["hider"] = request.json
-    print("---------HIDER SENT LOCATION-------------")
-    print(user_locations["hider"])
     return jsonify({"message": "Hider location updated"}), 200
 
 # API to fetch all users' locations
@@ -62,7 +58,6 @@ def get_locations():
     global global_queries_timer
     local_query_timer = global_queries_timer + 1
     global_queries_timer = local_query_timer
-    #user_locations["hider"] = {"speed": 10, "lat": 33.6472, "lng": -117.8411}
     if global_queries_timer % free_hint_interval == 0: #check whether we send a location hint anyway
         pass
     elif "hider" in user_locations and float(user_locations["hider"]["speed"]) < display_hider_threshold:
@@ -74,7 +69,6 @@ def set_game_state():
     global game_state
     global global_queries_timer
     global_queries_timer = 0
-    print("Toggling game state!")
     game_state= not game_state
     return str(game_state)
 
