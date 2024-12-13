@@ -20,7 +20,7 @@ document.addEventListener("DOMContentLoaded", function () {
 
   // Function to update markers on the map
   function updateMarkers(locations) {
-    console.log(locations);
+    // console.log(locations);
     for (const userId in locations) {
       if (userId == "hider") {
         continue;
@@ -52,8 +52,8 @@ document.addEventListener("DOMContentLoaded", function () {
 
     if (userId in locations) {
       const {speed, lat, lng} = locations[userId]
-      console.log(lat);
-      console.log(lng);
+      // console.log(lat);
+      // console.log(lng);
       if (!markers[userId]) {
         markers[userId] = L.marker([lat, lng], {icon:redIcon})
           .addTo(map)
@@ -89,9 +89,11 @@ document.addEventListener("DOMContentLoaded", function () {
   async function fetchButtonState() {
     response = await fetch("/get_game_state")
     const buttonJson = await response.json()
-    gamestate = buttonJson[gamestate]
-    console.log(gamestate)
-    if (gamestate==false) {window.alert('Game is over!')}
+    var new_gamestate = buttonJson["gamestate"]
+    console.log(new_gamestate)
+    if (new_gamestate != gamestate && gamestate==false) {alert('Game Starts NOW!!!')}
+    if (new_gamestate != gamestate && gamestate==true) {alert('Game Over!!!')}
+    gamestate = new_gamestate
   }
 
   // Generate a unique user ID if one doesn't exist

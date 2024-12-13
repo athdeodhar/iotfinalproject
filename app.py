@@ -67,10 +67,7 @@ def get_locations():
         pass
     elif "hider" in user_locations and float(user_locations["hider"]["speed"]) < display_hider_threshold:
         user_locations.pop("hider")
-    if game_state or True: #Turn off this trsue to hide all locations once game is 'over'
-        return jsonify(user_locations), 200
-    else:
-        return jsonify({}), 200
+    return jsonify(user_locations), 200
 
 @app.route('/set_game_state', methods=['POST'])
 def set_game_state():
